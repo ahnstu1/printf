@@ -1,21 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*   ft_printf_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hahn <hahn@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/16 09:28:14 by hahn              #+#    #+#             */
-/*   Updated: 2022/03/16 13:18:59 by hahn             ###   ########.fr       */
+/*   Created: 2022/03/16 10:24:33 by hahn              #+#    #+#             */
+/*   Updated: 2022/03/16 13:12:31 by hahn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FT_PRINTF_H
-# define FT_PRINTF_H
-
-# include <stdarg.h>
-# include <unistd.h>
-
-int	ft_printf(const char *format, ...);
-
-#endif
