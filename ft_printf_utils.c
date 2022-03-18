@@ -9,7 +9,7 @@
 /*   Updated: 2022/03/16 15:53:30 by hahn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+/*
 char	*ft_itoa(unsigned long long n)
 {
 	unsigned long long	temp;
@@ -34,3 +34,4 @@ char	*ft_itoa(unsigned long long n)
 	}
 	return (str);
 }
+*/

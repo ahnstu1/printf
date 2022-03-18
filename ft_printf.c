@@ -26,129 +26,78 @@ size_t	ft_strlen(const char *s)
 int	format_s(char *s)
 {
 	if (!s)
-	{
-		write(1, "(null)", 6);
-		return (6);
-	}
-	else if (!*s)
-		return (0);
-	else
-		write(1, s, ft_strlen(s));
-	return ft_strlen(s);
+		return (write(1, "(null)", 6));
+	return (write(1, s, ft_strlen(s)));
 }
 
 int	format_c(char c)
 {
-	write(1, &c, 1);
-	return (1);
+	return (write(1, &c, 1));
+}
+
+char	*base_maker(char format)
+{
+	if (format == 'u')
+		return ("0123456789");
+	else if (format == 'x' || format == 'p')
+		return ("0123456789abcdef");
+	else
+		return ("0123456789ABCDEF");
+}
+int	format_di(int di)
+{
+	char	nbr[10];
+	int		len;
+	int		idx;
+
+	len = 0;
+	idx = 0;
+	if (!di)
+		return (write(1, "0", 1));
+	if (di == -2147483648)
+		return (write(1, "-2147483648", 11));
+	if (di < 0)
+	{
+		di *= -1;
+		len += write(1, "-", 1);
+	}
+	while (di)
+	{
+		nbr[idx++] = di % 10 + '0';
+		di /= 10;
+	}
+	while (--idx != -1)
+		len += write(1, &nbr[idx], 1);
+	return (len);
+}
+int	format_uxp(unsigned long long uxp, char format)
+{
+	char	*base;
+	char	nbr[16];
+	int		div;
+	int		idx;
+	int		len;
+
+	len = 0;
+	idx = 0;
+	base = base_maker(format);
+	div = ft_strlen(base);
+	if (!uxp)
+		return (write(1, "0", 1));
+	while (uxp)
+	{
+		nbr[idx++] = base[uxp % div];
+		uxp /= div;
+	}
+	while (--idx != -1)
+		len += write(1, &nbr[idx], 1);
+	return (len);
 }
 
 int	format_p(unsigned long long p)
 {
-	char	hex[8];
-	char	*base;
-	int		idx;
-	int		len;
-	
-	base = "0123456789abcdef";
-	idx = 0;
 	write(1, "0x", 2);
-	while (p)
-	{
-		hex[idx++] = base[p % 16];
-		p /= 16;
-	}
-	len = --idx;
-	while (idx != -1)
-		write(1, &hex[idx--], 1);
-
-	return (len);
-}
-
-int	format_di(int di)
-{
-	int		nbr[10];
-	int		idx;
-	int		len;
-
-	if (!di)
-	{
-		write (1, "0", 1);
-		return (1);
-	}
-	else if (di = -2147483648)
-	{
-		write (1, "-2147483647", 11);
-		return (11);
-	}
-	else
-	{
-		if (di < 0)
-			di * -1;
-		
-	}
-	return (len);
-}
-
-int	format_u(unsigned int u)
-{
-	int	nbr[10];
-	int	idx;
-	int	len;
-
-	len = 0;
-	idx = 0;
-	while (u)
-	{
-		nbr[idx++] = u % 10;
-		u /= 10;
-	}
-	len += --idx;
-	while (idx != -1)
-		write(1, &nbr[idx--] + '0', 1);
-	return (len);
-}
-
-int	format_x(unsigned int x)
-{
-	char	hex[8];
-	char	*base;
-	int		idx;
-	int		len;
-
-	len = 0;
-	base = "0123456789abcdef";
-	idx = 0;
-	while (x)
-	{
-		hex[idx++] = base[x % 16];
-		x /= 16;
-	}
-	len += --idx;
-	while (idx != -1)
-		write(1, &hex[idx--], 1);
-	return (len);
-}
-
-int	format_X(unsigned int X)
-{
-	char	hex[8];
-	char	*base;
-	int		idx;
-	int		len;
-	
-	len = 0;
-	base = "0123456789ABCDEF";
-	idx = 0;
-	while (X)
-	{
-		hex[idx++] = base[X % 16];
-		X /= 16;
-	}
-	len += --idx; 
-	while (idx != -1)
-		write(1, &hex[idx--], 1);
-	return (len);
+	return (2 + format_uxp(p, 'p'));
 }
 
 int	contain_specific(va_list ap, const char *format)
@@ -156,13 +105,12 @@ int	contain_specific(va_list ap, const char *format)
 	int	idx;
 	int len;
 
-	idx = 0;
+	idx = -1;
 	len = 0;
-	while (format[idx])
+	while (format[++idx])
 	{
-		if (format[idx] == '%')
+		if (format[idx] == '%' && ++idx)
 		{
-			idx++;
 			if (format[idx] == 'c')
 				len += format_c(va_arg(ap, int));
 			else if (format[idx] == 's')
@@ -171,21 +119,13 @@ int	contain_specific(va_list ap, const char *format)
 				len += format_p(va_arg(ap, unsigned long long));
 			else if (format[idx] == 'd' || format[idx] == 'i')
 				len += format_di(va_arg(ap, int));
-			else if (format[idx] == 'u')
-				len += format_u(va_arg(ap, unsigned int));
-			else if (format[idx] == 'x')
-				len += format_x(va_arg(ap, unsigned int));
-			else if (format[idx] == 'X')
-				len += format_X(va_arg(ap, unsigned int));
+			else if (format[idx] == 'u' || format[idx] == 'x' || format[idx] == 'X')
+				len += format_uxp(va_arg(ap, unsigned int), format[idx]);
 			else if (format[idx] == '%')
-			{
-				write(1, "%", 1);
-				len++;
-			}
+				len += write(1, "%", 1);
 		}
 		else
 			write(1, &format[idx], 1);
-		idx++;
 	}
 	return (len);
 }
@@ -214,15 +154,3 @@ int	ft_printf(const char *format, ...)
 	va_end(ap);
 	return (str_len);
 }
-
-#include <stdio.h>
-
-int	main(void)
-{
-	ft_printf("%d", 0);
-	ft_printf(" %d", 1);
-	ft_printf("%d ", -1);
-	ft_printf(" %d ", -3);
-	
-}
-
