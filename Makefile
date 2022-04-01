@@ -6,7 +6,7 @@
 #    By: hahn <hahn@student.42seoul.kr>             +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/22 16:30:03 by hahn              #+#    #+#              #
-#    Updated: 2022/04/01 10:56:06 by hahn             ###   ########.fr        #
+#    Updated: 2022/04/01 14:23:43 by hahn             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,4 +31,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: bonus all clean fclean re
+.PHONY: all clean fclean re
