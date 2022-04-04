@@ -6,7 +6,7 @@
 /*   By: hahn <hahn@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/16 09:28:02 by hahn              #+#    #+#             */
-/*   Updated: 2022/04/01 11:28:49 by hahn             ###   ########.fr       */
+/*   Updated: 2022/04/04 15:12:28 by hahn             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	contain_specific(va_list ap, const char *format)
 				len += write(1, "%", 1);
 		}
 		else
-			write(1, format, 1);
+			len += write(1, format, 1);
 		format++;
 	}
 	return (len);
@@ -48,20 +48,8 @@ int	ft_printf(const char *format, ...)
 	int		idx;
 
 	idx = 0;
-	str_len = 0;
 	va_start(ap, format);
-	while (format[idx])
-	{
-		if (format[idx] != '%')
-			str_len++;
-		if (format[idx] == '%')
-			idx++;
-		idx++;
-	}
-	if (ft_strlen(format) == str_len)
-		write(1, format, str_len);
-	else
-		str_len += contain_specific(ap, format);
+	str_len = contain_specific(ap, format);
 	va_end(ap);
 	return (str_len);
 }
